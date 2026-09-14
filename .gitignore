@@ -47,6 +47,9 @@ yarn-debug.log*
 yarn-error.log*
 .eslintcache
 
+# Keep frontend build for deployment
+# frontend/build/  <-- intentionally not ignored
+
 # IDE
 .vscode/
 .idea/

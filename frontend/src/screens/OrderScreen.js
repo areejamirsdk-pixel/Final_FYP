@@ -8,10 +8,13 @@ import Loader from '../components/Loader'
 import { getOrderDetails, payOrder, deliverOrder } from '../actions/orderActions'
 import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../constants/orderConstants'
 
-function OrderScreen({ match, history }) {
+function OrderScreen({ match, history, location }) {
     const orderId = match.params.id
     const dispatch = useDispatch()
 
+    // Show success banner only when redirected from PlaceOrderScreen
+    const isNewOrder = location && location.state && location.state.newOrder
+    const [showSuccess, setShowSuccess] = useState(isNewOrder || false)
 
     const [sdkReady, setSdkReady] = useState(false)
 
@@ -80,6 +83,18 @@ function OrderScreen({ match, history }) {
         <Message variant='danger'>{error}</Message>
     ) : (
                 <div>
+                    {showSuccess && (
+                        <Message variant='success'>
+                            <strong>🎉 Order Placed Successfully!</strong> A confirmation email has been sent to <strong>{order.user.email}</strong>.
+                            &nbsp;
+                            <span
+                                style={{ cursor: 'pointer', float: 'right', fontWeight: 'bold' }}
+                                onClick={() => setShowSuccess(false)}
+                            >
+                                ✕
+                            </span>
+                        </Message>
+                    )}
                     <h1>Order: {order.Id}</h1>
                     <Row>
                         <Col md={8}>

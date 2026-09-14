@@ -217,6 +217,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 if os.getcwd() == '/app':
     DEBUG = False
 
-# --- Email settings for 2FA OTP ---
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'Digital Edge <noreply@digitaledge.com>'
+# --- Email settings for order confirmation & 2FA OTP ---
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'hina.amir.sdk@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'himari786')
+DEFAULT_FROM_EMAIL = f'Digital Edge <{EMAIL_HOST_USER}>'

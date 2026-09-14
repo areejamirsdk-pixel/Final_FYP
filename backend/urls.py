@@ -20,6 +20,7 @@ from django.views.static import serve
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from base.views.chainlit_proxy_views import chainlit_proxy
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,9 @@ urlpatterns = [
     path('api/users/', include('base.urls.user_urls')),
     path('api/orders/', include('base.urls.order_urls')),
     path('api/chatbot/', include('base.urls.chatbot_urls')),
+
+    # Chainlit chatbot proxy - forwards /chainlit/* to port 8001
+    re_path(r'^chainlit/(?P<path>.*)$', chainlit_proxy),
 
     # Media files view (ensures product images load in production)
     re_path(r'^images/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

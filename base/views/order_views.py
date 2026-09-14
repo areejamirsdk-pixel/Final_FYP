@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -9,6 +12,66 @@ from base.serializers import ProductSerializer, OrderSerializer
 
 from rest_framework import status
 from datetime import datetime
+
+
+def send_order_confirmation_email(order, user, order_items, shipping):
+    """Send order confirmation email to the customer."""
+    try:
+        subject = f'Order Confirmed - Digital Edge (#{ order._id })'
+
+        # Build items list for email
+        items_text = '\n'.join([
+            f"  - {item.name} x{item.qty}  @ ${item.price} each"
+            for item in order_items
+        ])
+
+        message = f"""
+Hi {user.first_name or user.username},
+
+Thank you for your order! Your order has been placed successfully.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ORDER CONFIRMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Order ID   : #{order._id}
+Date       : {order.createdAt.strftime('%B %d, %Y at %I:%M %p')}
+Payment    : {order.paymentMethod}
+
+ITEMS ORDERED:
+{items_text}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRICE BREAKDOWN:
+  Subtotal   : ${float(order.totalPrice) - float(order.shippingPrice) - float(order.taxPrice):.2f}
+  Shipping   : ${float(order.shippingPrice):.2f}
+  Tax        : ${float(order.taxPrice):.2f}
+  ─────────────────────────
+  TOTAL      : ${float(order.totalPrice):.2f}
+
+SHIPPING ADDRESS:
+  {shipping.address}
+  {shipping.city}, {shipping.postalCode}
+  {shipping.country}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{'Your order will be paid on delivery (COD).' if order.paymentMethod == 'COD' else 'Please complete your payment to process the order.'}
+
+Thank you for shopping with Digital Edge!
+Team Digital Edge
+        """.strip()
+
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=True,  # Don't crash if email fails
+        )
+        print(f"[ORDER] Confirmation email sent to {user.email} for order #{order._id}")
+    except Exception as e:
+        print(f"[ORDER] Email sending failed: {e}")
 
 
 @api_view(['POST'])
@@ -24,7 +87,6 @@ def addOrderItems(request):
     else:
 
         # (1) Create order
-
         order = Order.objects.create(
             user=user,
             paymentMethod=data['paymentMethod'],
@@ -34,7 +96,6 @@ def addOrderItems(request):
         )
 
         # (2) Create shipping address
-
         shipping = ShippingAddress.objects.create(
             order=order,
             address=data['shippingAddress']['address'],
@@ -44,6 +105,7 @@ def addOrderItems(request):
         )
 
         # (3) Create order items and set order to orderItem relationship
+        created_items = []
         for i in orderItems:
             product = Product.objects.get(_id=i['product'])
 
@@ -55,11 +117,14 @@ def addOrderItems(request):
                 price=i['price'],
                 image=product.image.url,
             )
+            created_items.append(item)
 
             # (4) Update stock
-
             product.countInStock -= item.qty
             product.save()
+
+        # (5) Send confirmation email
+        send_order_confirmation_email(order, user, created_items, shipping)
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
