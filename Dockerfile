@@ -1,11 +1,12 @@
 # Stage 1: Build React Frontend
-FROM node:18-bullseye-slim AS frontend-builder
+FROM node:16-bullseye-slim AS frontend-builder
 WORKDIR /app/frontend
 
 COPY frontend/package*.json ./
 RUN npm install --legacy-peer-deps
 
 COPY frontend/ ./
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npm run build
 
 # Stage 2: Python Backend & Final Image
@@ -41,4 +42,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Run migrations and start gunicorn
-CMD ["sh", "-c", "python manage.py migrate && gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120"]
