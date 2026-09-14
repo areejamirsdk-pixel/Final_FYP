@@ -46,7 +46,7 @@ export const productListReducer = (state = { products: [] }, action) => {
             }
 
         case PRODUCT_LIST_FAIL:
-            return { loading: false, error: action.payload }
+            return { loading: false, error: action.payload, products: [] }
 
         default:
             return state
@@ -58,13 +58,13 @@ export const productListReducer = (state = { products: [] }, action) => {
 export const productDetailsReducer = (state = { product: { reviews: [] } }, action) => {
     switch (action.type) {
         case PRODUCT_DETAILS_REQUEST:
-            return { loading: true, ...state }
+            return { ...state, loading: true }
 
         case PRODUCT_DETAILS_SUCCESS:
             return { loading: false, product: action.payload }
 
         case PRODUCT_DETAILS_FAIL:
-            return { loading: false, error: action.payload }
+            return { loading: false, error: action.payload, product: { reviews: [] } }
 
         default:
             return state
@@ -166,4 +166,3 @@ export const productTopRatedReducer = (state = { products: [] }, action) => {
             return state
     }
 }
-

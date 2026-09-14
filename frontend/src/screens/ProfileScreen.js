@@ -50,18 +50,45 @@ function ProfileScreen({ history }) {
     const submitHandler = (e) => {
         e.preventDefault()
 
-        if (password != confirmPassword) {
-            setMessage('Passwords do not match')
-        } else {
-            dispatch(updateUserProfile({
-                'id': user._id,
-                'name': name,
-                'email': email,
-                'password': password
-            }))
-            setMessage('')
+        if (password) {
+            if (password.length < 8) {
+                setMessage('Password must be at least 8 characters long')
+                return
+            }
+
+            if (!/[A-Z]/.test(password)) {
+                setMessage('Password must contain at least one uppercase letter')
+                return
+            }
+
+            if (!/[a-z]/.test(password)) {
+                setMessage('Password must contain at least one lowercase letter')
+                return
+            }
+
+            if (!/[0-9]/.test(password)) {
+                setMessage('Password must contain at least one number')
+                return
+            }
+
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                setMessage('Password must contain at least one special character (e.g. ! @ # $ %)')
+                return
+            }
         }
 
+        if (password !== confirmPassword) {
+            setMessage('Passwords do not match')
+            return
+        }
+
+        dispatch(updateUserProfile({
+            'id': user._id,
+            'name': name,
+            'email': email,
+            'password': password
+        }))
+        setMessage('')
     }
     return (
         <Row>

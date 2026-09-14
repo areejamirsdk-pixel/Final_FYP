@@ -49,8 +49,23 @@ function RegisterScreen({ location, history }) {
             return
         }
 
-        if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
-            setMessage('Password must contain at least one letter and one number')
+        if (!/[A-Z]/.test(password)) {
+            setMessage('Password must contain at least one uppercase letter')
+            return
+        }
+
+        if (!/[a-z]/.test(password)) {
+            setMessage('Password must contain at least one lowercase letter')
+            return
+        }
+
+        if (!/[0-9]/.test(password)) {
+            setMessage('Password must contain at least one number')
+            return
+        }
+
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            setMessage('Password must contain at least one special character (e.g. ! @ # $ %)')
             return
         }
 
@@ -131,4 +146,4 @@ function RegisterScreen({ location, history }) {
     )
 }
 
-   export default RegisterScreen
+export default RegisterScreen

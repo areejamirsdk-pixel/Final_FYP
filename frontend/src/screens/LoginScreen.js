@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
+import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
@@ -11,6 +11,7 @@ function LoginScreen({ location, history }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [otp, setOtp] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -60,13 +61,23 @@ function LoginScreen({ location, history }) {
 
                         <Form.Group controlId='password'>
                             <Form.Label>Password</Form.Label>
-                            <Form.Control
-                                type='password'
-                                placeholder='Enter Password'
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            >
-                            </Form.Control>
+                            <InputGroup>
+                                <Form.Control
+                                    type={showPassword ? 'text' : 'password'}
+                                    placeholder='Enter Password'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                >
+                                </Form.Control>
+                                <InputGroup.Text
+                                    role='button'
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    title={showPassword ? 'Hide password' : 'Show password'}
+                                >
+                                    <i className={showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+                                </InputGroup.Text>
+                            </InputGroup>
                         </Form.Group>
 
                         <Button type='submit' variant='primary'>

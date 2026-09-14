@@ -21,25 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fyp-ecommerce-secret-key-2025')
+SECRET_KEY = 'Your secret key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.railway.app',
-    'https://*.up.railway.app',
-    'https://*.onrender.com',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'proshop-demo.herokuapp.com']
 
 # Email settings (used for order confirmation emails)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -145,17 +135,18 @@ DATABASES = {
     }
 }
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    try:
-        import dj_database_url
-        DATABASES['default'] = dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    except ImportError:
-        pass
+# Database
+# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'Pak Electronics',
+#        'USER': 'Saif Ur Rehman',
+#        'PASSWORD': os.environ.get('DB_PASS'),
+#        'HOST': os.environ.get('HOST'),
+#        'PORT': '5432'
+#    }
+# }
 
 
 # Password validation
@@ -190,8 +181,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -200,13 +189,9 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
 
 STATICFILES_DIRS = [
-    p for p in [
-        BASE_DIR / 'static',
-        BASE_DIR / 'frontend/build/static'
-    ] if os.path.exists(p)
+    BASE_DIR / 'static',
+    BASE_DIR / 'frontend/build/static'
 ]
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 
 MEDIA_ROOT = BASE_DIR / 'static/images'
@@ -217,11 +202,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 if os.getcwd() == '/app':
     DEBUG = False
 
-# --- Email settings for order confirmation & 2FA OTP ---
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'hina.amir.sdk@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'himari786')
-DEFAULT_FROM_EMAIL = f'Digital Edge <{EMAIL_HOST_USER}>'
+# --- Email settings for 2FA OTP ---
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'Digital Edge <noreply@digitaledge.com>'
