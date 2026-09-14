@@ -1,15 +1,4 @@
-# Stage 1: Build React Frontend
-FROM node:16-bullseye-slim AS frontend-builder
-WORKDIR /app/frontend
-
-COPY frontend/package*.json ./
-RUN npm install --legacy-peer-deps
-
-COPY frontend/ ./
-ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN npm run build
-
-# Stage 2: Python Backend & Final Image
+# Single stage: Python only - React build already committed to repo
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -30,16 +19,12 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy backend source code
+# Copy all source code (includes pre-built frontend/build)
 COPY . ./
-
-# Copy built frontend from Stage 1
-COPY --from=frontend-builder /app/frontend/build /app/frontend/build
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-# Run migrations and start gunicorn
 CMD ["sh", "-c", "python manage.py migrate && gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120"]
