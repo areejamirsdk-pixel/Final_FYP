@@ -12,7 +12,8 @@
       "rating": 4.5,
       "numReviews": 12,
       "price": 89.99,
-      "countInStock": 10
+      "countInStock": 10,
+      "createdAt": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -28,7 +29,8 @@
       "rating": 4.0,
       "numReviews": 8,
       "price": 599.99,
-      "countInStock": 7
+      "countInStock": 7,
+      "createdAt": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -44,7 +46,8 @@
       "rating": 3.0,
       "numReviews": 5,
       "price": 929.99,
-      "countInStock": 4
+      "countInStock": 4,
+      "createdAt": "2026-01-01T00:00:00Z"
     }
   },
   {
@@ -60,7 +63,8 @@
       "rating": 5.0,
       "numReviews": 10,
       "price": 399.99,
-      "countInStock": 6
+      "countInStock": 6,
+      "createdAt": "2026-01-01T00:00:00Z"
     }
   }
 ]
