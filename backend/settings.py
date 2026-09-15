@@ -26,7 +26,7 @@ SECRET_KEY = 'Your secret key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'proshop-demo.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'proshop-demo.herokuapp.com', 'finalfyp-production-b5a0.up.railway.app']
 
 # Email settings (used for order confirmation emails)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
