@@ -1,0 +1,66 @@
+[
+  {
+    "model": "base.product",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "name": "Airpods Wireless Bluetooth Headphones",
+      "image": "/images/airpods.jpg",
+      "brand": "Apple",
+      "category": "Electronics",
+      "description": "Bluetooth in-ear headphones with charging case, offering clear sound and long battery life.",
+      "rating": 4.5,
+      "numReviews": 12,
+      "price": 89.99,
+      "countInStock": 10
+    }
+  },
+  {
+    "model": "base.product",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "name": "iPhone 11 Pro 256GB Memory",
+      "image": "/images/phone.jpg",
+      "brand": "Apple",
+      "category": "Electronics",
+      "description": "Latest iPhone with 256GB storage, triple camera system and A13 Bionic chip.",
+      "rating": 4.0,
+      "numReviews": 8,
+      "price": 599.99,
+      "countInStock": 7
+    }
+  },
+  {
+    "model": "base.product",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "name": "Cannon EOS 80D DSLR Camera",
+      "image": "/images/camera.jpg",
+      "brand": "Cannon",
+      "category": "Electronics",
+      "description": "Professional DSLR camera with 24.2 megapixel sensor and 45-point autofocus.",
+      "rating": 3.0,
+      "numReviews": 5,
+      "price": 929.99,
+      "countInStock": 4
+    }
+  },
+  {
+    "model": "base.product",
+    "pk": 4,
+    "fields": {
+      "user": 1,
+      "name": "Sony Playstation 4 Pro White Version",
+      "image": "/images/playstation.jpg",
+      "brand": "Sony",
+      "category": "Electronics",
+      "description": "Limited edition white PlayStation 4 Pro with 1TB storage and 4K gaming support.",
+      "rating": 5.0,
+      "numReviews": 10,
+      "price": 399.99,
+      "countInStock": 6
+    }
+  }
+]
