@@ -53,6 +53,8 @@ function ProductScreen({ match, history }) {
         ))
     }
 
+    const reviews = (product && product.reviews) ? product.reviews : []
+
     return (
         <div>
             <Link to='/' className='btn btn-light my-3'>Go Back</Link>
@@ -75,7 +77,7 @@ function ProductScreen({ match, history }) {
                                         </ListGroup.Item>
 
                                         <ListGroup.Item>
-                                            <Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} />
+                                            <Rating value={product.rating} text={`${product.numReviews || 0} reviews`} color={'#f8e825'} />
                                         </ListGroup.Item>
 
                                         <ListGroup.Item>
@@ -152,14 +154,14 @@ function ProductScreen({ match, history }) {
                             <Row>
                                 <Col md={6}>
                                     <h4>Reviews</h4>
-                                    {product.reviews?.length === 0 && <Message variant='info'>No Reviews</Message>}
+                                    {reviews.length === 0 && <Message variant='info'>No Reviews</Message>}
 
                                     <ListGroup variant='flush'>
-                                        {product.reviews?.map((review) => (
+                                        {reviews.map((review) => (
                                             <ListGroup.Item key={review._id}>
                                                 <strong>{review.name}</strong>
                                                 <Rating value={review.rating} color='#f8e825' />
-                                                <p>{review.createdAt.substring(0, 10)}</p>
+                                                <p>{review.createdAt ? review.createdAt.substring(0, 10) : ''}</p>
                                                 <p>{review.comment}</p>
                                             </ListGroup.Item>
                                         ))}
