@@ -3,6 +3,5 @@ builder = "dockerfile"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "sh -c \"python manage.py migrate && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120\""
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
