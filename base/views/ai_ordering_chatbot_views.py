@@ -26,7 +26,7 @@ def search_products_in_database(query, limit=10):
         spaced_query = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', query)
         
         # Clean and prepare search terms
-        raw_terms = re.findall(r'[a-zA-Z]+|\d+', spaced_query.lower())
+        raw_terms = re.findall(r'[a-zA-Z]+\d+|[a-zA-Z]+|\d+', spaced_query.lower())
         
         # Remove common filler/stopwords that cause false matches
         stopwords = {
