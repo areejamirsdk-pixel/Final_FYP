@@ -23,7 +23,7 @@ def search_products_in_database(query, limit=10):
         print(f"Searching database for: '{query}'")
         
         # Clean and prepare search terms
-        search_terms = re.findall(r'\b\w+\b', query.lower())
+        search_terms = re.findall(r'[a-zA-Z]+|\d+', query.lower())
         print(f"Search terms: {search_terms}")
         
         # Get all products from database
