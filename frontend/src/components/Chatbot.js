@@ -128,6 +128,10 @@ const Chatbot = () => {
             timestamp: new Date()
         }])
         setError('')
+        setPendingOrder(null)
+        setNeedsAddress(false)
+        setOrderCreated(false)
+        setOrderData(null)
     }
 
     const formatTime = (timestamp) => {
