@@ -22,9 +22,25 @@ def search_products_in_database(query, limit=10):
     try:
         print(f"Searching database for: '{query}'")
         
+        # Split camelCase boundaries first (e.g. "samsungS23" -> "samsung S23")
+        spaced_query = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', query)
+        
         # Clean and prepare search terms
-        search_terms = re.findall(r'[a-zA-Z]+|\d+', query.lower())
+        raw_terms = re.findall(r'[a-zA-Z]+|\d+', spaced_query.lower())
+        
+        # Remove common filler/stopwords that cause false matches
+        stopwords = {
+            'i', 'a', 'an', 'the', 'to', 'of', 'for', 'my', 'me', 'is', 'it',
+            'want', 'need', 'buy', 'order', 'get', 'take', 'looking', 'like',
+            'please', 'can', 'you', 'would', 'this', 'that', 'one', 'some',
+            'and', 'or', 'in', 'on', 'with', 'have', 'has', 'do', 'does'
+        }
+        search_terms = [t for t in raw_terms if t not in stopwords and len(t) > 1]
+        
         print(f"Search terms: {search_terms}")
+        
+        if not search_terms:
+            return []
         
         # Get all products from database
         all_products = Product.objects.all()
@@ -41,11 +57,43 @@ def search_products_in_database(query, limit=10):
             )
         
         # Search with stock filter
-        products = all_products.filter(q_objects).filter(countInStock__gt=0)[:limit]
-        print(f"Found {products.count()} products matching query")
+        products = all_products.filter(q_objects).filter(countInStock__gt=0).distinct()
+        
+        # Rank by number of matching terms (best matches first)
+        scored_products = []
+        for product in products:
+            combined_text = f"{product.name} {product.brand} {product.category} {product.description or ''}".lower()
+            score = sum(1 for term in search_terms if term in combined_text)
+            scored_products.append((score, product))
+        
+        scored_products.sort(key=lambda x: x[0], reverse=True)
+        top_products = [p for score, p in scored_products[:limit]]
+        
+        print(f"Found {len(top_products)} products matching query")
         
         # Format results
         results = []
+        for product in top_products:
+            product_data = {
+                'id': product._id,
+                'name': product.name or 'Unknown Product',
+                'brand': product.brand or 'Unknown Brand',
+                'category': product.category or 'Electronics',
+                'price': float(product.price) if product.price else 0.0,
+                'rating': float(product.rating) if product.rating else 0.0,
+                'numReviews': product.numReviews or 0,
+                'description': (product.description[:150] + '...') if product.description and len(product.description) > 150 else (product.description or 'No description available'),
+                'in_stock': product.countInStock > 0,
+                'stock_count': product.countInStock or 0,
+                'image': product.image.url if product.image else '/placeholder.png'
+            }
+            results.append(product_data)
+            print(f"Added product: {product_data['name']} - ${product_data['price']}")
+        
+        return results
+    except Exception as e:
+        print(f"Error searching products: {e}")
+        return []
         for product in products:
             product_data = {
                 'id': product._id,
