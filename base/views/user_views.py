@@ -46,7 +46,7 @@ def requestLoginOtp(request):
     code = LoginOTP.generate_code()
     LoginOTP.objects.create(user=user, code=code)
 
-        try:
+    try:
         resend.Emails.send({
             "from": "Digital Edge <onboarding@resend.dev>",
             "to": [user.email],
