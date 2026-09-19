@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
+import resend
+import os
+resend.api_key = os.environ.get('RESEND_API_KEY')
 from base.models import LoginOTP
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -43,12 +46,15 @@ def requestLoginOtp(request):
     code = LoginOTP.generate_code()
     LoginOTP.objects.create(user=user, code=code)
 
-    send_mail(
-        subject='Your Digital Edge login code',
-        message=f'Your one-time login code is {code}. It expires in 10 minutes.',
-        from_email=None,
-        recipient_list=[user.email],
-    )
+        try:
+        resend.Emails.send({
+            "from": "Digital Edge <onboarding@resend.dev>",
+            "to": [user.email],
+            "subject": "Your Digital Edge login code",
+            "text": f"Your one-time login code is {code}. It expires in 10 minutes.",
+        })
+    except Exception as e:
+        print(f"Error sending email via Resend: {e}")
 
     return Response({'detail': 'OTP sent to your email', 'email': user.email})
 
